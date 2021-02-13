@@ -1,2 +1,2 @@
 # pyoctoprintapi
-Octoprint API wrapper
+Simple async wrapper around the Octoprint API

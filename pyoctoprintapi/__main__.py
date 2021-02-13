@@ -1,0 +1,46 @@
+"""Test entry point"""
+
+import aiohttp
+import pyoctoprintapi
+import argparse
+import asyncio
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
+
+async def main(host, user, port, use_ssl):
+    """Main function."""
+    LOGGER.info("Starting octoprint")
+
+    websession = aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar(unsafe=True))
+
+    client = pyoctoprintapi.OctoprintClient(host, websession, port, use_ssl, "/")
+    api_key = await client.request_app_key("testapp", user)
+    client.set_api_key(api_key)
+    printer_info = await client.get_printer_info()
+    job_info = await client.get_job_info()
+    server_info = await client.get_server_info()
+    tracking_info = await client.get_tracking_info()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("host", type=str)
+    parser.add_argument("user", type=str)
+    parser.add_argument("-p", "--port", type=int, default=80)
+    parser.add_argument("-s", "--ssl", type=bool, default=False)
+    parser.add_argument("-d", "--debug", type=bool, default=False)
+    args = parser.parse_args()
+
+    LOG_LEVEL = logging.INFO
+    if args.debug:
+        LOG_LEVEL = logging.DEBUG
+    logging.basicConfig(format="%(message)s", level=LOG_LEVEL)
+
+    try:
+        asyncio.run(
+            main(args.host, args.user, args.port, args.ssl)
+        )
+    except KeyboardInterrupt:
+        pass
