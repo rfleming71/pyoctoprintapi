@@ -2,7 +2,7 @@
 
 import typing
 
-class Temperature:
+class ToolTemperature:
     """Define temperature information"""
     def __init__(self, raw: dict, name: str):
         self._raw = raw
@@ -95,13 +95,13 @@ class OctoprintPrinterInfo:
     def __init__(self, raw: dict):
         self._raw = raw
         self._tempatures = [
-            Temperature(raw["temperature"][x], x) for x in raw["temperature"]
+            ToolTemperature(raw["temperature"][x], x) for x in raw["temperature"]
         ]
         self._state = PrinterState(raw["state"])
         self._has_heated_bed = "bed" in raw["temperature"]
 
     @property
-    def temperatures(self) -> typing.List[Temperature]:
+    def temperatures(self) -> typing.List[ToolTemperature]:
         return self._tempatures
 
     @property

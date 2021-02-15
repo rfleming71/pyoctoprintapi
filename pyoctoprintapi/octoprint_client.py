@@ -52,7 +52,7 @@ class OctoprintClient:
         response = await self._api.get_server_info()
         return OctoprintServerInfo(response)
 
-    async def get_tracking_info(self) -> OctoprintServerInfo or None:
+    async def get_tracking_info(self) -> TrackingSetting or None:
         response = await self._api.get_settings()
         if "tracking" in response["plugins"]:
             return TrackingSetting(response["plugins"]["tracking"])
