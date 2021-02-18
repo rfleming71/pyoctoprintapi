@@ -3,12 +3,14 @@
 import aiohttp
 import asyncio
 import logging
+from typing import Optional
 
 from .api import OctoprintApi
-from .printer import OctoprintPrinterInfo
+from .const import JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_PAUSE, JOB_COMMAND_PAUSE_RESUME
 from .job import OctoprintJobInfo
+from .printer import OctoprintPrinterInfo
 from .server import OctoprintServerInfo
-from .settings import TrackingSetting
+from .settings import TrackingSetting, DiscoverySettings
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,11 +54,18 @@ class OctoprintClient:
         response = await self._api.get_server_info()
         return OctoprintServerInfo(response)
 
-    async def get_tracking_info(self) -> TrackingSetting or None:
+    async def get_tracking_info(self) -> Optional[TrackingSetting]:
         response = await self._api.get_settings()
         if "tracking" in response["plugins"]:
             return TrackingSetting(response["plugins"]["tracking"])
         
+        return None
+
+    async def get_discovery_info(self) -> Optional[DiscoverySettings]:
+        response = await self._api.get_settings()
+        if "discovery" in response["plugins"]:
+            return DiscoverySettings(response["plugins"]["discovery"])
+
         return None
 
     async def shutdown(self) -> None:
@@ -70,3 +79,15 @@ class OctoprintClient:
     async def restart(self) -> None:
         _LOGGER.debug("Sending restart command")
         await self._api.issue_system_command("core", "restart")
+
+    async def cancel_job(self) -> None:
+        _LOGGER.debug("Sending cancel job command")
+        await self._api.issue_job_command(JOB_COMMAND_CANCEL)
+
+    async def pause_job(self) -> None:
+        _LOGGER.debug("Sending pause job command")
+        await self._api.issue_job_command(JOB_COMMAND_PAUSE_PAUSE)
+
+    async def resume_job(self) -> None:
+        _LOGGER.debug("Sending resume job command")
+        await self._api.issue_job_command(JOB_COMMAND_PAUSE_RESUME)

@@ -89,3 +89,13 @@ TEST_SETTINGS_TRACKING = """
    "unique_id":"6c4fae84-4be3-4c4d-8fbd-de9d0c3e1fcb"
 }
 """
+
+TEST_SETTINGS_DISCOVERY = """
+{
+   "httpPassword":"password",
+   "httpUsername":"username",
+   "publicHost":"host",
+   "publicPort":80,
+   "upnpUuid":"436fc3ec-fc2e-4851-b289-eb17974aa706"
+}
+"""

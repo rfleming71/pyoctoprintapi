@@ -1,0 +1,17 @@
+"""Define common constants"""
+
+JOB_COMMAND_START = "start"
+JOB_COMMAND_CANCEL = "cancel"
+JOB_COMMAND_RESTART = "restart"
+JOB_COMMAND_PAUSE = "pause"
+JOB_COMMAND_PAUSE_PAUSE = "pause"
+JOB_COMMAND_PAUSE_RESUME = "resume"
+JOB_COMMAND_PAUSE_TOGGLE = "toggle"
+
+JOB_STATE_OPERATIONAL="Operational"
+JOB_STATE_PRINTING="Printing"
+JOB_STATE_PAUSING="Pausing"
+JOB_STATE_PAUSED="Paused"
+JOB_STATE_CANCELLING="Cancelling"
+JOB_STATE_ERROR="Error"
+JOB_STATE_OFFLINE="Offline"

@@ -22,6 +22,7 @@ async def main(host, user, port, use_ssl):
     job_info = await client.get_job_info()
     server_info = await client.get_server_info()
     tracking_info = await client.get_tracking_info()
+    discovery_info = await client.get_discovery_info()
 
 
 if __name__ == "__main__":

@@ -28,7 +28,12 @@ class OctoprintApi:
         self._session.headers.update({"X-Api-Key": api_key})
 
     async def get_printer_info(self):
-        return await self._get_request(PRINTER_ENDPOINT)
+        _LOGGER.debug("Request Method=GET Endpoint=%s", PRINTER_ENDPOINT)
+        response = await self._session.get(self._base_url + PRINTER_ENDPOINT)
+        if response.status == 409:
+            raise Exception("Printer is not operational")
+
+        return await response.json()
 
     async def get_job_info(self):
         return await self._get_request(JOB_ENDPOINT)
@@ -78,15 +83,17 @@ class OctoprintApi:
         if response.status != 204:
             raise Exception(f"Failed to issue command {source}.{action} - code {response.status}")
 
+    async def issue_job_command(self, command: str, action:str = None) -> None:
+        _LOGGER.debug("Request Method=POST Endpoint=%s", JOB_ENDPOINT)
+        data = {"command": command}
+        if action:
+            data["action"] = action
+        response = await self._session.post(f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}", json=data)
+        if response.status != 204:
+            raise Exception("The printer is not operational or the current print job state does not match the preconditions for the command")
+
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
         response = await self._session.get(self._base_url + endpoint)
         body = await response.json()
         return body
-
-    async def _post_request(self, endpoint: str, body: object):
-        _LOGGER.debug("Request Method=POST Endpoint=%s", endpoint)
-        response = await self._session.get(self._base_url + endpoint)
-        body = await response.json()
-        return body
-
