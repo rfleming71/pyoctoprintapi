@@ -1,0 +1,7 @@
+""" Library exception defs """
+
+class ApiError(Exception):
+    """Base API Exception"""
+
+class PrinterOffline(ApiError):
+    """Indicate the printer to not connected to the server"""

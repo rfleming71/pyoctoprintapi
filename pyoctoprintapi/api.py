@@ -3,7 +3,7 @@
 import aiohttp
 import logging
 
-from . import PrinterOffline
+from .exceptions import PrinterOffline, ApiError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,13 +67,13 @@ class OctoprintApi:
             location_url = response.headers["Location"]
             return location_url[location_url.rindex("/") + 1:]
 
-        raise Exception(f"Failed to start auth process: code {response.status}")
+        raise ApiError(f"Failed to start auth process: code {response.status}")
 
     async def appkeys_check_status(self, appkey:str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", APPKEY_REQUEST_ENDPOINT)
         response = await self._session.get(f"{self._base_url}{APPKEY_REQUEST_ENDPOINT}/{appkey}")
         if response.status == 404:
-            raise Exception("Application key creation request has been denied or timed out")
+            raise ApiError("Application key creation request has been denied or timed out")
 
         body = await response.json()
         return body
@@ -83,7 +83,7 @@ class OctoprintApi:
         url = f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}/{source}/{action}"
         response = await self._session.post(url)
         if response.status != 204:
-            raise Exception(f"Failed to issue command {source}.{action} - code {response.status}")
+            raise ApiError(f"Failed to issue command {source}.{action} - code {response.status}")
 
     async def issue_job_command(self, command: str, action:str = None) -> None:
         _LOGGER.debug("Request Method=POST Endpoint=%s", JOB_ENDPOINT)
@@ -92,10 +92,18 @@ class OctoprintApi:
             data["action"] = action
         response = await self._session.post(f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}", json=data)
         if response.status != 204:
-            raise Exception("The printer is not operational or the current print job state does not match the preconditions for the command")
+            raise ApiError("The printer is not operational or the current print job state does not match the preconditions for the command")
 
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
         response = await self._session.get(self._base_url + endpoint)
+        try:
+            response.raise_for_status()
+        except aiohttp.ClientResponseError as ex:
+            raise ApiError from ex
+
+        if response.content_length == 0:
+            return None
+
         body = await response.json()
         return body
