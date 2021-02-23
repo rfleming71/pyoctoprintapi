@@ -86,8 +86,8 @@ class OctoprintClient:
 
     async def pause_job(self) -> None:
         _LOGGER.debug("Sending pause job command")
-        await self._api.issue_job_command(JOB_COMMAND_PAUSE_PAUSE)
+        await self._api.issue_job_command(JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_PAUSE)
 
     async def resume_job(self) -> None:
         _LOGGER.debug("Sending resume job command")
-        await self._api.issue_job_command(JOB_COMMAND_PAUSE_RESUME)
+        await self._api.issue_job_command(JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_RESUME)
