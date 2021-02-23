@@ -3,6 +3,8 @@
 import aiohttp
 import logging
 
+from . import PrinterOffline
+
 _LOGGER = logging.getLogger(__name__)
 
 APPKEY_ENDPOINT_BASE = "plugin/appkeys"
@@ -31,7 +33,7 @@ class OctoprintApi:
         _LOGGER.debug("Request Method=GET Endpoint=%s", PRINTER_ENDPOINT)
         response = await self._session.get(self._base_url + PRINTER_ENDPOINT)
         if response.status == 409:
-            raise Exception("Printer is not operational")
+            raise PrinterOffline("Printer is not operational")
 
         return await response.json()
 
