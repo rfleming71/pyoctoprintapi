@@ -7,6 +7,7 @@ from typing import Optional
 
 from .api import OctoprintApi
 from .const import JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_PAUSE, JOB_COMMAND_PAUSE_RESUME
+from .exceptions import OctoprintException
 from .job import OctoprintJobInfo
 from .printer import OctoprintPrinterInfo
 from .server import OctoprintServerInfo
@@ -23,7 +24,7 @@ class OctoprintClient:
 
     async def request_app_key(self, app_name: str, user:str, timeout:int = 5) -> str:
         if not await self._api.check_appkeys_enabled():
-            raise Exception("The application keys plugin appears to be disabled")
+            raise OctoprintException("The application keys plugin appears to be disabled")
 
         request_id = await self._api.appkeys_start_auth(app_name, user)
         status_response = await self._api.appkeys_check_status(request_id)
@@ -35,7 +36,7 @@ class OctoprintClient:
                 
             timeout -= 1
             if timeout <= 0:
-                raise Exception("Timeout waiting for authorization")
+                raise OctoprintException("Timeout waiting for authorization")
 
         return status_response["api_key"]
     

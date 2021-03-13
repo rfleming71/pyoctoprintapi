@@ -1,6 +1,9 @@
 """ Library exception defs """
 
-class ApiError(Exception):
+class OctoprintException(Exception):
+    """Base Exception"""
+
+class ApiError(OctoprintException):
     """Base API Exception"""
 
 class PrinterOffline(ApiError):

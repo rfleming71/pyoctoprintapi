@@ -24,7 +24,7 @@ async def main(host, user, port, use_ssl):
     tracking_info = await client.get_tracking_info()
     discovery_info = await client.get_discovery_info()
 
-    websession.close()
+    await websession.close()
 
 
 if __name__ == "__main__":
