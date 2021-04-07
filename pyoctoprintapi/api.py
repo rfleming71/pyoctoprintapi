@@ -1,6 +1,7 @@
 """API for interacting with an Octoprint server""" 
 
 import aiohttp
+import asyncio
 import logging
 
 from .exceptions import PrinterOffline, ApiError
@@ -31,6 +32,7 @@ class OctoprintApi:
 
     async def get_printer_info(self):
         _LOGGER.debug("Request Method=GET Endpoint=%s", PRINTER_ENDPOINT)
+        await asyncio.sleep(0.001)
         response = await self._session.get(self._base_url + PRINTER_ENDPOINT)
         if response.status == 409:
             raise PrinterOffline("Printer is not operational")
@@ -51,6 +53,7 @@ class OctoprintApi:
 
     async def check_appkeys_enabled(self):
         _LOGGER.debug("Request Method=GET Endpoint=%s", APPKEY_PROBE_ENDPOINT)
+        await asyncio.sleep(0.001)
         response = await self._session.get(self._base_url + APPKEY_PROBE_ENDPOINT)
         if response.status != 204:
             return False
@@ -62,6 +65,7 @@ class OctoprintApi:
         if user:
             data["user"] = user
         _LOGGER.debug("Request Method=GET Endpoint=%s", APPKEY_REQUEST_ENDPOINT)
+        await asyncio.sleep(0.001)
         response = await self._session.post(self._base_url + APPKEY_REQUEST_ENDPOINT, json = data)
         if response.status == 201:
             location_url = response.headers["Location"]
@@ -71,6 +75,7 @@ class OctoprintApi:
 
     async def appkeys_check_status(self, appkey:str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", APPKEY_REQUEST_ENDPOINT)
+        await asyncio.sleep(0.001)
         response = await self._session.get(f"{self._base_url}{APPKEY_REQUEST_ENDPOINT}/{appkey}")
         if response.status == 404:
             raise ApiError("Application key creation request has been denied or timed out")
@@ -81,6 +86,7 @@ class OctoprintApi:
     async def issue_system_command(self, source:str, action:str) -> None:
         _LOGGER.debug("Request Method=POST Endpoint=%s", SYSTEM_COMMAND_ENDPOINT)
         url = f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}/{source}/{action}"
+        await asyncio.sleep(0.001)
         response = await self._session.post(url)
         if response.status != 204:
             raise ApiError(f"Failed to issue command {source}.{action} - code {response.status}")
@@ -96,6 +102,7 @@ class OctoprintApi:
 
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
+        await asyncio.sleep(0.001)
         response = await self._session.get(self._base_url + endpoint)
         try:
             response.raise_for_status()
