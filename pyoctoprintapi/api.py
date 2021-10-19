@@ -28,12 +28,12 @@ class OctoprintApi:
         self._session = session
 
     def set_api_key(self, api_key: str) -> None:
-        self._session.headers.update({"X-Api-Key": api_key})
+        self._headers.update({"X-Api-Key": api_key})
 
     async def get_printer_info(self):
         _LOGGER.debug("Request Method=GET Endpoint=%s", PRINTER_ENDPOINT)
         await asyncio.sleep(0.001)
-        response = await self._session.get(self._base_url + PRINTER_ENDPOINT)
+        response = await self._session.get(self._base_url + PRINTER_ENDPOINT, headers=self._headers)
         if response.status == 409:
             raise PrinterOffline("Printer is not operational")
 
@@ -87,7 +87,7 @@ class OctoprintApi:
         _LOGGER.debug("Request Method=POST Endpoint=%s", SYSTEM_COMMAND_ENDPOINT)
         url = f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}/{source}/{action}"
         await asyncio.sleep(0.001)
-        response = await self._session.post(url)
+        response = await self._session.post(url, headers=self._headers)
         if response.status != 204:
             raise ApiError(f"Failed to issue command {source}.{action} - code {response.status}")
 
@@ -96,14 +96,14 @@ class OctoprintApi:
         data = {"command": command}
         if action:
             data["action"] = action
-        response = await self._session.post(f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}", json=data)
+        response = await self._session.post(f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}", json=data, headers=self._headers)
         if response.status != 204:
             raise ApiError("The printer is not operational or the current print job state does not match the preconditions for the command")
 
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
         await asyncio.sleep(0.001)
-        response = await self._session.get(self._base_url + endpoint)
+        response = await self._session.get(self._base_url + endpoint, headers=self._headers)
         try:
             response.raise_for_status()
         except aiohttp.ClientResponseError as ex:
