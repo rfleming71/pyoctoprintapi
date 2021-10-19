@@ -5,6 +5,7 @@ import pyoctoprintapi
 import argparse
 import asyncio
 import logging
+from types import MappingProxyType
 
 LOGGER = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ async def main(host, user, port, use_ssl):
     LOGGER.info("Starting octoprint")
 
     async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar(unsafe=True)) as websession:
+        websession._default_headers = MappingProxyType({})  # type: ignore
         client = pyoctoprintapi.OctoprintClient(host, websession, port, use_ssl, "/")
         api_key = await client.request_app_key("testapp", user, 60)
         client.set_api_key(api_key)
@@ -42,7 +44,7 @@ if __name__ == "__main__":
 
     try:
         asyncio.run(
-            main(args.host, args.user, 5000, args.ssl)
+            main(args.host, args.user, args.port, args.ssl)
         )
     except KeyboardInterrupt:
         pass
