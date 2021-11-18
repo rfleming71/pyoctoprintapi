@@ -24,6 +24,7 @@ async def main(host, user, port, use_ssl):
         server_info = await client.get_server_info()
         tracking_info = await client.get_tracking_info()
         discovery_info = await client.get_discovery_info()
+        camera_info = await client.get_webcam_info()
 
         await websession.close()
 

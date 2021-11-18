@@ -11,7 +11,7 @@ from .exceptions import OctoprintException
 from .job import OctoprintJobInfo
 from .printer import OctoprintPrinterInfo
 from .server import OctoprintServerInfo
-from .settings import TrackingSetting, DiscoverySettings
+from .settings import TrackingSetting, DiscoverySettings, WebcamSettings
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,6 +59,13 @@ class OctoprintClient:
         response = await self._api.get_settings()
         if "tracking" in response["plugins"]:
             return TrackingSetting(response["plugins"]["tracking"])
+        
+        return None
+
+    async def get_webcam_info(self) -> Optional[WebcamSettings]:
+        response = await self._api.get_settings()
+        if "webcam" in response:
+            return WebcamSettings(self._base_url, response["webcam"])
         
         return None
 
