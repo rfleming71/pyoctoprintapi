@@ -96,7 +96,7 @@ class OctoprintApi:
         data = {"command": command}
         if action:
             data["action"] = action
-        response = await self._session.post(f"{self._base_url}{SYSTEM_COMMAND_ENDPOINT}", json=data, headers=self._headers)
+        response = await self._session.post(f"{self._base_url}{JOB_ENDPOINT}", json=data, headers=self._headers)
         if response.status != 204:
             raise ApiError("The printer is not operational or the current print job state does not match the preconditions for the command")
 
