@@ -4,7 +4,7 @@ import aiohttp
 import asyncio
 import logging
 
-from .exceptions import PrinterOffline, ApiError
+from .exceptions import PrinterOffline, ApiError, UnauthorizedException
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,6 +36,8 @@ class OctoprintApi:
         response = await self._session.get(self._base_url + PRINTER_ENDPOINT, headers=self._headers)
         if response.status == 409:
             raise PrinterOffline("Printer is not operational")
+        if response.status == 403:
+            raise UnauthorizedException
 
         return await response.json()
 
@@ -107,6 +109,9 @@ class OctoprintApi:
         try:
             response.raise_for_status()
         except aiohttp.ClientResponseError as ex:
+            if ex.status == 403:
+                raise UnauthorizedException from ex
+
             raise ApiError from ex
 
         if response.content_length == 0:
