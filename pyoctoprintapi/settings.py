@@ -83,6 +83,8 @@ class WebcamSettings:
     @property
     def stream_url(self) -> str:
         stream_url = self._raw["streamUrl"]
+        if stream_url[:1] == "/" and self._base_url[-1:] == "/":
+            stream_url = stream_url[1:]
         return f"{self._base_url}{stream_url}"
 
     @property
