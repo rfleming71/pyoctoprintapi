@@ -1,17 +1,19 @@
 """Client for interacting with an Octoprint server""" 
 
-import aiohttp
 import asyncio
 import logging
 from typing import Optional
 
+import aiohttp
+
 from .api import OctoprintApi
-from .const import JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_PAUSE, JOB_COMMAND_PAUSE_RESUME
+from .const import (JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE,
+                    JOB_COMMAND_PAUSE_PAUSE, JOB_COMMAND_PAUSE_RESUME)
 from .exceptions import OctoprintException
 from .job import OctoprintJobInfo
 from .printer import OctoprintPrinterInfo
 from .server import OctoprintServerInfo
-from .settings import TrackingSetting, DiscoverySettings, WebcamSettings
+from .settings import DiscoverySettings, TrackingSetting, WebcamSettings
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -99,3 +101,11 @@ class OctoprintClient:
     async def resume_job(self) -> None:
         _LOGGER.debug("Sending resume job command")
         await self._api.issue_job_command(JOB_COMMAND_PAUSE, JOB_COMMAND_PAUSE_RESUME)
+
+    async def disconnect(self) -> None:
+        _LOGGER.debug("Disconnecting from printer")
+        await self._api.issue_connection_command("disconnect")
+
+    async def connect(self, port: Optional[str] = None, baud_rate: Optional[int] = None, printer_profile: Optional[str] = None, save: Optional[bool] = None, auto_connect: Optional[bool] = None) -> None:
+        _LOGGER.debug("Connecting to printer")
+        await self._api.issue_connection_command("connect", port=port, baudrate=baud_rate, printerprofile=printer_profile, save=save, autoconnect=auto_connect)

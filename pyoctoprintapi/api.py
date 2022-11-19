@@ -1,10 +1,11 @@
 """API for interacting with an Octoprint server""" 
 
-import aiohttp
 import asyncio
 import logging
 
-from .exceptions import PrinterOffline, ApiError, UnauthorizedException
+import aiohttp
+
+from .exceptions import ApiError, PrinterOffline, UnauthorizedException
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -58,6 +59,7 @@ class OctoprintApi:
         await asyncio.sleep(0.001)
         response = await self._session.get(self._base_url + APPKEY_PROBE_ENDPOINT)
         if response.status != 204:
+            print(response)
             return False
 
         return True
@@ -101,6 +103,17 @@ class OctoprintApi:
         response = await self._session.post(f"{self._base_url}{JOB_ENDPOINT}", json=data, headers=self._headers)
         if response.status != 204:
             raise ApiError("The printer is not operational or the current print job state does not match the preconditions for the command")
+
+    async def issue_connection_command(self, command: str, **args) -> None:
+        _LOGGER.debug("Request METHOD=POST Endpoint=%s", CONNECTION_ENDPOINT)
+        url = f"{self._base_url}{CONNECTION_ENDPOINT}"
+        data = {
+            key: value for key, value in args.items() if value is not None
+        }
+        data["command"] = command
+        response = await self._session.post(url, json=data, headers=self._headers)
+        if response.status != 204:
+            raise ApiError(f"Failed to issue connection command {command} - code {response.status}")
 
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
