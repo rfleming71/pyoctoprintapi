@@ -61,7 +61,6 @@ class OctoprintApi:
         await asyncio.sleep(0.001)
         response = await self._session.get(self._base_url + APPKEY_PROBE_ENDPOINT)
         if response.status != 204:
-            print(response)
             return False
 
         return True
