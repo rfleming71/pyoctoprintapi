@@ -17,6 +17,8 @@ JOB_ENDPOINT = "api/job"
 PRINTER_ENDPOINT = "api/printer"
 SERVER_ENDPOINT = "api/server"
 SETTINGS_ENDPOINT = "api/settings"
+BED_ENDPOINT = "api/printer/bed"
+TOOL_ENDPOINT = "api/printer/tool"
 SYSTEM_COMMAND_ENDPOINT = "/api/system/commands"
 
 class OctoprintApi:
@@ -114,6 +116,28 @@ class OctoprintApi:
         response = await self._session.post(url, json=data, headers=self._headers)
         if response.status != 204:
             raise ApiError(f"Failed to issue connection command {command} - code {response.status}")
+
+    async def set_bed_temperature(self, target:int, offset: int = 0) -> None:
+        _LOGGER.debug("Request METHOD=POST Endpoint=%s Target=%d Offset=%d", BED_ENDPOINT, target, offset)
+        url = f"{self._base_url}/{BED_ENDPOINT}"
+        data = {
+            "command": "target",
+            "target": target,
+            "offset": offset
+        }
+        response = await self._session.post(url, json=data, headers=self._headers)
+        if response.status != 204:
+            raise ApiError(f"Failed to set bed temperature - code {response.status}")
+
+    async def issue_tool_command(self, command: str, **args) -> None:
+        _LOGGER.debug("Request Method=POST Endpoint=%s", TOOL_ENDPOINT)
+        data = {
+            key: value for key, value in args.items() if value is not None
+        }
+        data["command"] = command
+        response = await self._session.post(f"{self._base_url}{TOOL_ENDPOINT}", json=data, headers=self._headers)
+        if response.status != 204:
+            raise ApiError("The printer is not operational or the current print job state does not match the preconditions for the command")
 
     async def _get_request(self, endpoint: str):
         _LOGGER.debug("Request Method=GET Endpoint=%s", endpoint)
