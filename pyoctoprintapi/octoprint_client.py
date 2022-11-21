@@ -7,7 +7,8 @@ from typing import Optional
 import aiohttp
 
 from .api import OctoprintApi
-from .const import (JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE,
+from .const import (CONNECTION_COMMAND_CONNECT, CONNECTION_COMMAND_DISCONNECT,
+                    JOB_COMMAND_CANCEL, JOB_COMMAND_PAUSE,
                     JOB_COMMAND_PAUSE_PAUSE, JOB_COMMAND_PAUSE_RESUME)
 from .exceptions import OctoprintException
 from .job import OctoprintJobInfo
