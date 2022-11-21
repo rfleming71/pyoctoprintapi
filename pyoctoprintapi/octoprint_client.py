@@ -104,7 +104,7 @@ class OctoprintClient:
 
     async def disconnect(self) -> None:
         _LOGGER.debug("Disconnecting from printer")
-        await self._api.issue_connection_command("disconnect")
+        await self._api.issue_connection_command(CONNECTION_COMMAND_DISCONNECT)
 
     async def connect(self, port: Optional[str] = None, baud_rate: Optional[int] = None, printer_profile: Optional[str] = None, save: Optional[bool] = None, auto_connect: Optional[bool] = None) -> None:
         _LOGGER.debug("Connecting to printer")
