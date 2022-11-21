@@ -126,7 +126,7 @@ class OctoprintClient:
         }
         await self._api.issue_tool_command("target", targets=targets)
 
-    async def turn_off_tool(self, tool: str) -> None:
+    async def turn_tool_off(self, tool: str) -> None:
         _LOGGER.debug("Turning off tool %s", tool)
         targets = {
             tool: 0
