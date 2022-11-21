@@ -108,7 +108,7 @@ class OctoprintClient:
 
     async def connect(self, port: Optional[str] = None, baud_rate: Optional[int] = None, printer_profile: Optional[str] = None, save: Optional[bool] = None, auto_connect: Optional[bool] = None) -> None:
         _LOGGER.debug("Connecting to printer")
-        await self._api.issue_connection_command("connect", port=port, baudrate=baud_rate, printerprofile=printer_profile, save=save, autoconnect=auto_connect)
+        await self._api.issue_connection_command(CONNECTION_COMMAND_CONNECT, port=port, baudrate=baud_rate, printerprofile=printer_profile, save=save, autoconnect=auto_connect)
 
     async def set_bed_temperature(self, target: int, offset: int = 0) -> None:
         _LOGGER.debug("Setting bed temp to %d, offset %d", target, offset)
