@@ -99,3 +99,47 @@ TEST_SETTINGS_DISCOVERY = """
    "upnpUuid":"436fc3ec-fc2e-4851-b289-eb17974aa706"
 }
 """
+
+TEST_SETTINGS_CAMERA = """
+{
+   "bitrate": "10000k",
+   "cacheBuster": false,
+   "ffmpegPath": "/usr/bin/ffmpeg",
+   "ffmpegThreads": 1,
+   "ffmpegVideoCodec": "libx264",
+   "flipH": false,
+   "flipV": false,
+   "rotate90": false,
+   "snapshotSslValidation": true,
+   "snapshotTimeout": 5,
+   "snapshotUrl": "http://127.0.0.1:8080/?action=snapshot",
+   "streamRatio": "16:9",
+   "streamTimeout": 5,
+   "streamUrl": "/webcam/?action=stream",
+   "timelapseEnabled": true,
+   "watermark": true,
+   "webcamEnabled": true
+}
+"""
+
+TEST_SETTINGS_CAMERA_1 = """
+{
+   "bitrate": "10000k",
+   "cacheBuster": false,
+   "ffmpegPath": "/usr/bin/ffmpeg",
+   "ffmpegThreads": 1,
+   "ffmpegVideoCodec": "libx264",
+   "flipH": false,
+   "flipV": false,
+   "rotate90": false,
+   "snapshotSslValidation": true,
+   "snapshotTimeout": 5,
+   "snapshotUrl": "http://127.0.0.1:8080/?action=snapshot",
+   "streamRatio": "16:9",
+   "streamTimeout": 5,
+   "streamUrl": "http://127.0.0.1:8000/webcam/?action=stream",
+   "timelapseEnabled": true,
+   "watermark": true,
+   "webcamEnabled": true
+}
+"""
