@@ -20,9 +20,12 @@ _LOGGER = logging.getLogger(__name__)
 
 class OctoprintClient:
     """Client for interacting with an Octoprint server"""
-    def __init__(self, host: str, session: aiohttp.ClientSession, port: int = 80, ssl: bool = False, path: str = "/"):
+    def __init__(self, host: str, session: aiohttp.ClientSession = None, port: int = 80, ssl: bool = False, path: str = "/"):
         protocol = "https" if ssl else "http"
         self._base_url = f"{protocol}://{host}:{port}{path}"
+        if session is None:
+            connector = aiohttp.TCPConnector(force_close=True)
+            session = aiohttp.ClientSession(connector=connector)
         self._api = OctoprintApi(self._base_url, session)
 
     async def request_app_key(self, app_name: str, user:str, timeout:int = 5) -> str:
