@@ -13,7 +13,7 @@ from setuptools import setup
 setup(
     name="pyoctoprintapi",
     packages=["pyoctoprintapi"],
-    version="0.1.11",
+    version="0.1.12",
     description="An asynchronous Python library for communicating with the OctoPrint API",
     author="Ryan Fleming",
     author_email="rfleming71@users.noreply.github.com",
