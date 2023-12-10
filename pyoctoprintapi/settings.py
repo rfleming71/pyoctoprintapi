@@ -83,7 +83,10 @@ class WebcamSettings:
     @property
     def stream_url(self) -> str:
         stream_url = self._raw["streamUrl"]
-        if stream_url[:4] == "http":
+        if (stream_url.startswith("http://")
+                or stream_url.startswith("https://")
+                or stream_url.startswith("webrtc://")
+                or stream_url.startswith("webrtcs://")):
             return stream_url
             
         if stream_url[:1] == "/" and self._base_url[-1:] == "/":

@@ -2,7 +2,8 @@
 import json
 
 from pyoctoprintapi.settings import TrackingSetting, WebcamSettings, DiscoverySettings
-from fixtures import TEST_SETTINGS_CAMERA, TEST_SETTINGS_CAMERA_1, TEST_SETTINGS_TRACKING, TEST_SETTINGS_DISCOVERY
+from fixtures import (TEST_SETTINGS_CAMERA, TEST_SETTINGS_CAMERA_1,TEST_SETTINGS_CAMERA_2, TEST_SETTINGS_TRACKING,
+                      TEST_SETTINGS_DISCOVERY)
 
 def test_tracking_setting_properties():
     tracking = TrackingSetting(json.loads(TEST_SETTINGS_TRACKING))
@@ -24,16 +25,16 @@ def test_webcam_settings_properties():
     assert tracking.external_snapshot_url == "https://foo.com:8080/webcam/?action=snapshot"
     assert tracking.stream_url == "https://foo.com:8080/webcam/?action=stream"
 
-def test_webcam_settings_2_properties():
-    tracking = WebcamSettings("https://foo.com:8080", json.loads(TEST_SETTINGS_CAMERA))
-    assert tracking.enabled 
-    assert tracking.bitrate == "10000k"
-    assert tracking.external_snapshot_url == "https://foo.com:8080/webcam/?action=snapshot"
-    assert tracking.stream_url == "https://foo.com:8080/webcam/?action=stream"
-
-def test_webcam_settings_2_properties():
+def test_webcam_settings_1_properties():
     tracking = WebcamSettings("https://foo.com:8080", json.loads(TEST_SETTINGS_CAMERA_1))
     assert tracking.enabled 
     assert tracking.bitrate == "10000k"
     assert tracking.external_snapshot_url == "http://127.0.0.1:8000/webcam/?action=snapshot"
     assert tracking.stream_url == "http://127.0.0.1:8000/webcam/?action=stream"
+
+def test_webcam_settings_2_properties():
+    tracking = WebcamSettings("https://foo.com:8080", json.loads(TEST_SETTINGS_CAMERA_2))
+    assert tracking.enabled 
+    assert tracking.bitrate == "10000k"
+    assert tracking.internal_snapshot_url == "http://127.0.0.1:1984/api/frame.jpeg?src=streamname"
+    assert tracking.stream_url == "webrtc://127.0.0.1:1984/api/webrtc?src=streamname"
