@@ -143,3 +143,26 @@ TEST_SETTINGS_CAMERA_1 = """
    "webcamEnabled": true
 }
 """
+
+# go2rtc style
+TEST_SETTINGS_CAMERA_2 = """
+{
+   "bitrate": "10000k",
+   "cacheBuster": false,
+   "ffmpegPath": "/usr/bin/ffmpeg",
+   "ffmpegThreads": 1,
+   "ffmpegVideoCodec": "libx264",
+   "flipH": false,
+   "flipV": false,
+   "rotate90": false,
+   "snapshotSslValidation": true,
+   "snapshotTimeout": 5,
+   "snapshotUrl": "http://127.0.0.1:1984/api/frame.jpeg?src=streamname",
+   "streamRatio": "16:9",
+   "streamTimeout": 5,
+   "streamUrl": "webrtc://127.0.0.1:1984/api/webrtc?src=streamname",
+   "timelapseEnabled": true,
+   "watermark": true,
+   "webcamEnabled": true
+}
+"""
